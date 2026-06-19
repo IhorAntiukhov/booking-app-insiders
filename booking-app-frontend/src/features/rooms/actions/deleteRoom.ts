@@ -1,22 +1,17 @@
 "use server";
 
 import { cookies } from "next/headers";
-import RoomDto from "../types/roomDto";
 
-export default async function createRoom({ name, description }: RoomDto) {
+export default async function deleteRoom(id: number) {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
 
-  const response = await fetch(`${process.env.API_URL}/rooms`, {
-    method: "POST",
+  const response = await fetch(`${process.env.API_URL}/rooms/${id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Cookie: `access_token=${accessToken ?? ""}`,
     },
-    body: JSON.stringify({
-      name,
-      description,
-    }),
   });
 
   if (!response.ok) {

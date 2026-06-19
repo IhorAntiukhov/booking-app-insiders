@@ -21,7 +21,7 @@ export class RoomService {
   }
 
   async findOne(id: number, user: JwtPayload) {
-    return await this.prismaService.room.findFirst({
+    const roomData = await this.prismaService.room.findFirst({
       where: {
         usersInRoom: {
           some: {
@@ -53,6 +53,21 @@ export class RoomService {
         },
       },
     });
+
+    if (roomData) {
+      return {
+        ...roomData,
+        userRole:
+          roomData.usersInRoom.findIndex(
+            (userInRoom) =>
+              userInRoom.role === "admin" && userInRoom.user.id === user.id,
+          ) !== -1
+            ? "admin"
+            : "user",
+      };
+    }
+
+    return null;
   }
 
   async create({ name, description }: CreateRoomDto, user: JwtPayload) {

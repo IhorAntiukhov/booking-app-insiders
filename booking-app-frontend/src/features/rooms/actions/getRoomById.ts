@@ -21,5 +21,5 @@ export default async function getRoomById(id: number) {
     return { data: null, error: body.message };
   }
 
-  return { data: body as FullRoomItem[], error: null };
+  return { data: body as FullRoomItem, error: null };
 }

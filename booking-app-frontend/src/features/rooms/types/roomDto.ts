@@ -1,6 +1,6 @@
-interface Room {
+interface RoomDto {
   name: string;
   description: string;
 }
 
-export default Room;
+export default RoomDto;

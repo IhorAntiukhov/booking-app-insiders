@@ -5,6 +5,7 @@ interface FullRoomItem {
   description: string;
   bookings: {
     id: number;
+    description: string;
     startDate: string;
     endDate: string;
   }[];
@@ -16,6 +17,7 @@ interface FullRoomItem {
       email: string;
     };
   }[];
+  userRole: Role;
 }
 
 export default FullRoomItem;
