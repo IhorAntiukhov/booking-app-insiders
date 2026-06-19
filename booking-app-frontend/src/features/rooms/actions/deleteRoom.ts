@@ -12,6 +12,9 @@ export default async function deleteRoom(id: number) {
       "Content-Type": "application/json",
       Cookie: `access_token=${accessToken ?? ""}`,
     },
+    body: JSON.stringify({
+      roomId: id,
+    }),
   });
 
   if (!response.ok) {

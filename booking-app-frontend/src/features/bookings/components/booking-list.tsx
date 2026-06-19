@@ -18,11 +18,13 @@ export default function BookingList({
 
   return (
     <div className="flex flex-col space-y-5 w-full max-w-60">
-      <FormDialog triggerLabel="New booking" title="Create booking">
-        <BookingForm roomId={roomId} />
-      </FormDialog>
+      {isAdmin && (
+        <FormDialog triggerLabel="New booking" title="Create booking">
+          <BookingForm roomId={roomId} />
+        </FormDialog>
+      )}
 
-      <div className="flex flex-col space-y-3 w-full">
+      <div className="space-y-3">
         {!!bookings && bookings.length > 0 ? (
           bookings.map(
             ({ id, description, startDate, endDate, usersInBooking }) => (

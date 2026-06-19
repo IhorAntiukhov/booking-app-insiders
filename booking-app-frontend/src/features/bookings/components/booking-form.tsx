@@ -10,12 +10,19 @@ import { useState } from "react";
 import DatePicker from "@/components/ui/date-picker";
 import createBooking from "../actions/create-booking";
 import { combineDateAndTime } from "@/lib/utils";
+import updateBooking from "../actions/update-booking";
 
 interface BookingFormProps {
   roomId: number;
+  bookingId?: number;
+  doUpdate?: boolean;
 }
 
-export default function BookingForm({ roomId }: BookingFormProps) {
+export default function BookingForm({
+  roomId,
+  bookingId,
+  doUpdate,
+}: BookingFormProps) {
   const router = useRouter();
 
   const {
@@ -40,12 +47,22 @@ export default function BookingForm({ roomId }: BookingFormProps) {
         const startTime = combineDateAndTime(date!, startDate);
         const endTime = combineDateAndTime(date!, endDate);
 
-        await createBooking({
-          description,
-          startDate: startTime.toISOString(),
-          endDate: endTime.toISOString(),
-          roomId,
-        });
+        if (doUpdate) {
+          await updateBooking({
+            id: bookingId!,
+            description,
+            startDate: startTime.toISOString(),
+            endDate: endTime.toISOString(),
+            roomId,
+          });
+        } else {
+          await createBooking({
+            description,
+            startDate: startTime.toISOString(),
+            endDate: endTime.toISOString(),
+            roomId,
+          });
+        }
 
         toast.success("Booking was successfully created!");
         router.refresh();
@@ -88,7 +105,9 @@ export default function BookingForm({ roomId }: BookingFormProps) {
         className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
 
-      <Button className="w-full">New booking</Button>
+      <Button className="w-full">
+        {doUpdate ? "Update booking" : "New booking"}
+      </Button>
     </form>
   );
 }

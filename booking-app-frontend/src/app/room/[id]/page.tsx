@@ -18,7 +18,13 @@ export default async function RoomPage({ params }: RoomPageProps) {
     <div className="flex flex-wrap gap-7 p-5">
       {data ? (
         <>
-          <EditRoom id={+id} name={data.name} description={data.description} />
+          {isAdmin && (
+            <EditRoom
+              id={+id}
+              name={data.name}
+              description={data.description}
+            />
+          )}
 
           <BookingList
             roomId={+id}

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Room from "../types/roomDto";
 import createRoom from "../actions/createRoom";
 import { useRouter } from "next/navigation";
+import { logout } from "@/features/auth/actions/logout";
 
 export default function Header() {
   const router = useRouter();
@@ -33,6 +34,17 @@ export default function Header() {
       toast.error((error as Error).message);
     }
   });
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      toast.success("You successfully logged out!");
+      router.refresh();
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
 
   return (
     <aside className="flex justify-between space-x-3">
@@ -60,7 +72,9 @@ export default function Header() {
         </form>
       </FormDialog>
 
-      <Button variant="secondary">Logout</Button>
+      <Button variant="secondary" onClick={handleLogout}>
+        Logout
+      </Button>
     </aside>
   );
 }

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import IconButton from "@/components/ui/icon-button";
 import { formatDate, formatTime } from "@/lib/utils";
-import { Pencil, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import deleteBooking from "../actions/delete-booking";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import signUpForMeeting from "../actions/sign-up-for-meeting";
 import { Separator } from "@/components/ui/separator";
 import FullRoomItem from "@/features/rooms/types/fullRoomItem";
 import UserItem from "@/features/rooms/components/user-item";
+import FormDialog from "@/components/ui/form-dialog";
+import BookingForm from "./booking-form";
 
 interface BookingItemProps {
   id: number;
@@ -65,13 +67,13 @@ export default function BookingItem({
   };
 
   return (
-    <Card className="h-full">
+    <Card className="flex flex-col">
       <CardHeader className="flex flex-col space-y-3">
         {isAdmin && (
           <div className="flex space-x-3">
-            <IconButton>
-              <Pencil size={24} />
-            </IconButton>
+            <FormDialog triggerLabel="Update" title="Update booking">
+              <BookingForm roomId={roomId} bookingId={id} doUpdate />
+            </FormDialog>
 
             <IconButton onClick={handleDeleteBooking}>
               <Trash size={24} />
@@ -82,7 +84,7 @@ export default function BookingItem({
         <CardTitle>{description}</CardTitle>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="flex-1">
         <Button className="w-full" onClick={handleSignUpForMeeting}>
           Sign up
         </Button>
@@ -105,7 +107,7 @@ export default function BookingItem({
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col space-y-3">
+      <CardFooter className="shrink-0 flex flex-col space-y-3">
         <p>{formatDate(startDate)}</p>
         <p>
           {formatTime(startDate)} - {formatTime(endDate)}

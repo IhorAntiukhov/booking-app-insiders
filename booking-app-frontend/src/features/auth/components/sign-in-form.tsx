@@ -18,8 +18,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import signIn from "../actions/signIn";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
+  const router = useRouter();
+
   const {
     control,
     formState: { errors },
@@ -37,6 +40,8 @@ export default function SignInForm() {
       await signIn({ email, password });
 
       toast.success("You successfully logged in!");
+
+      router.replace("/");
     } catch (error) {
       toast.error((error as Error).message);
     }
