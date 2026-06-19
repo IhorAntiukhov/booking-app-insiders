@@ -21,7 +21,7 @@ export class RoomService {
   }
 
   async findOne(id: number, user: JwtPayload) {
-    return await this.prismaService.room.findMany({
+    return await this.prismaService.room.findFirst({
       where: {
         usersInRoom: {
           some: {

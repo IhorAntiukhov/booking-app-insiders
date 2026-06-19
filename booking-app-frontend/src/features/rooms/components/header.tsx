@@ -5,10 +5,13 @@ import FormDialog from "@/components/ui/form-dialog";
 import FormInput from "@/components/ui/form-input";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Room from "../types/room";
+import Room from "../types/roomDto";
 import createRoom from "../actions/createRoom";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
+
   const {
     control,
     formState: { errors },
@@ -24,7 +27,8 @@ export default function Header() {
     try {
       await createRoom({ name, description });
 
-      toast.success("User was successfully created!");
+      toast.success("Room was successfully created!");
+      router.refresh();
     } catch (error) {
       toast.error((error as Error).message);
     }

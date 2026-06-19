@@ -1,8 +1,9 @@
-import { CanActivate, ExecutionContext } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import type { Request } from "express";
 import JwtPayload from "src/auth/types/jwtPayload.type";
 import { PrismaService } from "src/prisma/prisma.service";
 
+@Injectable()
 export class IsInRoom implements CanActivate {
   constructor(private readonly prismaService: PrismaService) {}
 

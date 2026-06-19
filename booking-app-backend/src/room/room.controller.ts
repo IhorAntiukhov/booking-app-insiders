@@ -25,6 +25,7 @@ export class RoomController {
 
   @Get()
   findAll(@Req() request: Request & { user: JwtPayload }) {
+    console.log(request.user);
     return this.roomService.findAll(request.user);
   }
 
