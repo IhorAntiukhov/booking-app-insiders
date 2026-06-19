@@ -17,6 +17,8 @@ import type { Request } from "express";
 import JwtPayload from "src/auth/types/jwtPayload.type";
 import { IsInRoom } from "./guards/isInRoom.guard";
 import { IsAdmin } from "./guards/isAdmin.guard";
+import { AddUserToRoomDto } from "./dto/add-user-to-room.dto";
+import { DeleteUserFromRoomDto } from "./dto/delete-user-from-room.dto";
 
 @UseGuards(JwtGuard)
 @Controller("rooms")
@@ -44,6 +46,16 @@ export class RoomController {
     @Req() request: Request & { user: JwtPayload },
   ) {
     return this.roomService.create(body, request.user);
+  }
+
+  @Post("/usersInRoom")
+  addUser(@Body() body: AddUserToRoomDto) {
+    return this.roomService.addUserToRoom(body);
+  }
+
+  @Delete("/usersInRoom")
+  deleteUser(@Body() body: DeleteUserFromRoomDto) {
+    return this.roomService.deleteUserFromRoom(body);
   }
 
   @UseGuards(IsAdmin)

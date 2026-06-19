@@ -1,8 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateRoomDto } from "./dto/create-room.dto";
 import { UpdateRoomDto } from "./dto/update-room.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import JwtPayload from "src/auth/types/jwtPayload.type";
+import { AddUserToRoomDto } from "./dto/add-user-to-room.dto";
+import { DeleteUserFromRoomDto } from "./dto/delete-user-from-room.dto";
 
 @Injectable()
 export class RoomService {
@@ -35,8 +37,20 @@ export class RoomService {
         bookings: {
           select: {
             id: true,
+            description: true,
             startDate: true,
             endDate: true,
+            usersInBooking: {
+              select: {
+                user: {
+                  select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                  },
+                },
+              },
+            },
           },
         },
         usersInRoom: {
@@ -83,6 +97,33 @@ export class RoomService {
         userId: user.id,
         roomId: newRoom.id,
         role: "admin",
+      },
+    });
+  }
+
+  async addUserToRoom({ email, role, roomId }: AddUserToRoomDto) {
+    const existingUser = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!existingUser) throw new NotFoundException("A user was not found");
+
+    await this.prismaService.userRoom.create({
+      data: {
+        userId: existingUser.id,
+        roomId: roomId,
+        role,
+      },
+    });
+  }
+
+  async deleteUserFromRoom({ userId, roomId }: DeleteUserFromRoomDto) {
+    await this.prismaService.userRoom.delete({
+      where: {
+        userId_roomId: {
+          userId,
+          roomId,
+        },
       },
     });
   }

@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PrismaService } from "./prisma/prisma.service";
 import { RoomModule } from "./room/room.module";
+import { BookingModule } from "./booking/booking.module";
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { RoomModule } from "./room/room.module";
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     RoomModule,
+    BookingModule,
   ],
   controllers: [],
   providers: [PrismaService],

@@ -10,17 +10,25 @@ export class IsAdmin implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request: Request = context.switchToHttp().getRequest();
 
-    const roomId = +request.params.id;
+    console.log(request.body);
+
+    const roomId =
+      +(request.body as { roomId: string }).roomId || +request.params.id;
     const user = request.user as JwtPayload;
 
-    const isUserAdmin = await this.prismaService.userRoom.findFirst({
+    console.log(roomId, user.id);
+
+    const userInRoom = await this.prismaService.userRoom.findUnique({
       where: {
-        roomId,
-        userId: user.id,
-        role: "admin",
+        userId_roomId: {
+          userId: user.id,
+          roomId,
+        },
       },
     });
 
-    return !!isUserAdmin;
+    console.log(userInRoom);
+
+    return !!userInRoom && userInRoom.role === "admin";
   }
 }

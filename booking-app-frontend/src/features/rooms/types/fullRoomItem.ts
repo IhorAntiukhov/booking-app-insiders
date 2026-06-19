@@ -8,6 +8,13 @@ interface FullRoomItem {
     description: string;
     startDate: string;
     endDate: string;
+    usersInBooking: {
+      user: {
+        id: string;
+        name: string;
+        email: string;
+      };
+    }[];
   }[];
   usersInRoom: {
     role: Role;

@@ -4,53 +4,91 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/ui/form-input";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import BookingDto from "../types/booking-dto";
+import { useState } from "react";
+import DatePicker from "@/components/ui/date-picker";
+import createBooking from "../actions/create-booking";
+import { combineDateAndTime } from "@/lib/utils";
 
-export default function BookingForm() {
+interface BookingFormProps {
+  roomId: number;
+}
+
+export default function BookingForm({ roomId }: BookingFormProps) {
   const router = useRouter();
 
   const {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<RoomDto>({
+  } = useForm<Omit<BookingDto, "roomId">>({
     defaultValues: {
-      name,
-      description,
+      description: "",
+      startDate: "",
+      endDate: "",
     },
   });
 
-  const handleUpdateRoom = handleSubmit(async ({ name, description }) => {
-    try {
-      await updateRoom({ id, name, description });
+  const [date, setDate] = useState<Date>();
 
-      toast.success("Room was successfully updated!");
-      router.refresh();
-    } catch (error) {
-      toast.error((error as Error).message);
-    }
-  });
+  const handleNewBooking = handleSubmit(
+    async ({ description, startDate, endDate }) => {
+      if (!date) toast.warning("Select booking date");
+
+      try {
+        const startTime = combineDateAndTime(date!, startDate);
+        const endTime = combineDateAndTime(date!, endDate);
+
+        await createBooking({
+          description,
+          startDate: startTime.toISOString(),
+          endDate: endTime.toISOString(),
+          roomId,
+        });
+
+        toast.success("Booking was successfully created!");
+        router.refresh();
+      } catch (error) {
+        toast.error((error as Error).message);
+      }
+    },
+  );
 
   return (
-    <form onSubmit={handleNewRoom} className="space-y-3">
+    <form onSubmit={handleNewBooking} className="space-y-3">
       <FormInput
-        name="name"
+        name="description"
         control={control}
-        placeholder="Name"
+        placeholder="Description"
         description="Enter booking description"
         type="text"
         errors={errors}
       />
 
+      <DatePicker date={date} setDate={setDate} />
+
       <FormInput
-        name="description"
+        name="startDate"
         control={control}
-        placeholder="Description"
-        description="Enter room description"
-        type="text"
+        placeholder="Start time"
+        description="Enter start time"
+        type="time"
         errors={errors}
+        className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
 
-      <Button className="w-full">New room</Button>
+      <FormInput
+        name="endDate"
+        control={control}
+        placeholder="End time"
+        description="Enter end time"
+        type="time"
+        errors={errors}
+        className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+      />
+
+      <Button className="w-full">New booking</Button>
     </form>
   );
 }
