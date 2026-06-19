@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  name String
+  email String @unique()
+  password String
+
+  availableRooms UserRoom[]
+  bookings UserBooking[]
+
+  @@map("users")
+}
+
+model Room {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  name String
+  description String @default("")
+
+  bookings Booking[]
+  usersInRoom UserRoom[]
+
+  @@map("rooms")
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+  startDate DateTime @map("start_date")
+  endDate DateTime @map("end_date")
+  roomId Int @map("room_id")
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  usersInBooking UserBooking[]
+
+  @@map("bookings")
+}
+
+model UserRoom {
+  userId String @map("user_id")
+  roomId Int @map("room_id")
+  role Role
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roomId])
+
+  @@map("users_rooms")
+}
+
+model UserBooking {
+  userId String @map("user_id")
+  bookingId Int @map("booking_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@id([userId, bookingId])
+
+  @@map("users_bookings")
+}
+
+enum Role {
+  admin
+  user
+}
