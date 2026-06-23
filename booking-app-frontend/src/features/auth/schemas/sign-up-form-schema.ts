@@ -2,7 +2,9 @@ import * as zod from "zod";
 import formErrorMessages from "../constants/form-error-messages";
 
 const zodObject = {
-  name: zod.string(formErrorMessages.fieldRequired),
+  name: zod
+    .string(formErrorMessages.fieldRequired)
+    .nonempty(formErrorMessages.fieldRequired),
   email: zod.email({
     error: (issue) =>
       !issue.input
