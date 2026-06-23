@@ -7,9 +7,7 @@
    <img src="https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
 
    <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-   </div>
-
-[Try it out](http://ielts-writecoach.expo.app/)
+</div>
 
 ---
 
