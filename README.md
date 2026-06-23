@@ -9,6 +9,8 @@
    <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </div>
 
+[Try it out](https://booking-app-insiders-9hss37kco-ihor-antiukhovs-projects.vercel.app)
+
 ---
 
 </div>
