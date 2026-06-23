@@ -1,24 +1,21 @@
 "use server";
 
-import { cookies } from "next/headers";
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
+
+interface SignUpForMeetingProps {
+  bookingId: number;
+}
 
 export default async function signUpForMeeting({
   bookingId,
-}: {
-  bookingId: number;
-}) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
-
-  const response = await fetch(`${process.env.API_URL}/bookings/sign-up`, {
+}: SignUpForMeetingProps) {
+  const response = await fetchWithCredentials({
+    url: "/bookings/sign-up",
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `access_token=${accessToken ?? ""}`,
-    },
-    body: JSON.stringify({
+    body: {
       bookingId,
-    }),
+    },
+    setCookies: true,
   });
 
   if (!response.ok) {

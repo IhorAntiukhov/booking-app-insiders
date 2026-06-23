@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Booking app",
     default: "Booking app",
   },
-  description: "Create meeting rooms, add users, and book meetings",
+  description: "Create meeting rooms, add users & book meetings",
 };
 
 export default function RootLayout({

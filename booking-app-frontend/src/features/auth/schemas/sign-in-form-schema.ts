@@ -1,5 +1,5 @@
 import * as zod from "zod";
-import formErrorMessages from "../constants/formErrorMessages";
+import formErrorMessages from "../constants/form-error-messages";
 
 export const signInFormSchema = zod.object({
   email: zod.email({

@@ -38,7 +38,13 @@ export default function FormInput<T extends FieldValues>({
         name={name}
         control={control}
         render={({ field }) => (
-          <Input id={name} type={type} placeholder={placeholder} {...field} />
+          <Input
+            id={name}
+            type={type}
+            placeholder={placeholder}
+            {...field}
+            onInput={field.onChange}
+          />
         )}
       />
 

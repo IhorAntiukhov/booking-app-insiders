@@ -1,7 +1,8 @@
-import FullRoomItem from "@/features/rooms/types/fullRoomItem";
+import FullRoomItem from "@/features/rooms/types/full-room-item";
 import BookingItem from "./booking-item";
 import FormDialog from "@/components/ui/form-dialog";
 import BookingForm from "./booking-form";
+import NoDataText from "@/components/ui/no-data-text";
 
 interface BookingListProps {
   roomId: number;
@@ -14,12 +15,14 @@ export default function BookingList({
   bookings,
   isAdmin,
 }: BookingListProps) {
-  console.log(bookings);
-
   return (
-    <div className="flex flex-col space-y-5 w-full max-w-60">
+    <div className="flex flex-col space-y-3">
       {isAdmin && (
-        <FormDialog triggerLabel="New booking" title="Create booking">
+        <FormDialog
+          type="text"
+          triggerLabel="New booking"
+          title="Create booking"
+        >
           <BookingForm roomId={roomId} />
         </FormDialog>
       )}
@@ -41,7 +44,7 @@ export default function BookingList({
             ),
           )
         ) : (
-          <p>No bookings yet</p>
+          <NoDataText>No bookings yet</NoDataText>
         )}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import * as zod from "zod";
-import formErrorMessages from "../constants/formErrorMessages";
+import formErrorMessages from "../constants/form-error-messages";
 
 const zodObject = {
   name: zod.string(formErrorMessages.fieldRequired),

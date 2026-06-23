@@ -9,7 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/dates";
 
 interface DatePickerProps {
   date: Date | undefined;
@@ -23,7 +23,7 @@ export default function DatePicker({ date, setDate }: DatePickerProps) {
         <Button
           variant="outline"
           data-empty={!date}
-          className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+          className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
         >
           {date ? formatDate(date.getTime()) : <span>Pick a date</span>}
           <ChevronDownIcon />

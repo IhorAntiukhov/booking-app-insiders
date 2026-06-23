@@ -2,7 +2,7 @@ interface RoomItem {
   name: string;
   description: string;
   id: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export default RoomItem;

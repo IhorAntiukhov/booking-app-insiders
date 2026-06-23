@@ -1,5 +1,7 @@
 "use server";
 
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
+
 interface SignUpProps {
   name: string;
   email: string;
@@ -7,16 +9,10 @@ interface SignUpProps {
 }
 
 export default async function signUp({ name, email, password }: SignUpProps) {
-  const response = await fetch(`${process.env.API_URL}/auth/sign-up`, {
+  const response = await fetchWithCredentials({
+    url: "/auth/sign-up",
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      password,
-    }),
+    body: { name, email, password },
   });
 
   if (!response.ok) {

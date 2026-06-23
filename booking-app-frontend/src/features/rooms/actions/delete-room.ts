@@ -1,18 +1,17 @@
 "use server";
 
-import UserRoomDto from "../types/user-room-dto";
 import fetchWithCredentials from "@/actions/fetch-with-credentials";
 
-export default async function deleteUserFromRoom({
-  userId,
-  roomId,
-}: UserRoomDto) {
+interface DeleteRoomProps {
+  id: number;
+}
+
+export default async function deleteRoom({ id }: DeleteRoomProps) {
   const response = await fetchWithCredentials({
-    url: "/rooms/usersInRomm",
+    url: `/rooms/${id}`,
     method: "DELETE",
     body: {
-      userId,
-      roomId,
+      roomId: id,
     },
     setCookies: true,
   });

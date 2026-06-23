@@ -30,7 +30,7 @@ export default function UserItem({
     try {
       await deleteUserFromRoom({ userId: id, roomId });
 
-      toast.success("User was successfully deleted!");
+      toast.success("User was successfully deleted from room!");
       router.refresh();
     } catch (error) {
       toast.error((error as Error).message);
@@ -38,16 +38,18 @@ export default function UserItem({
   };
 
   return (
-    <div className="flex space-x-3 items-center">
-      <User />
+    <div className="flex space-x-3 items-center justify-between">
+      <div className="flex space-x-3 items-center">
+        <User />
 
-      <div className="flex flex-col space-x-3 justify-center">
-        <p>
-          {`${name}${role ? " |" : ""}`}
-          {role && <b>{role}</b>}
-        </p>
+        <div className="flex flex-col space-x-3 justify-center">
+          <p>
+            <span className="text-wrap">{`${name}${role ? " | " : ""}`}</span>
+            {role && <b>{role}</b>}
+          </p>
 
-        <p>{email}</p>
+          <p>{email}</p>
+        </div>
       </div>
 
       {isAdmin && (

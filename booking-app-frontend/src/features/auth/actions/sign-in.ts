@@ -1,5 +1,6 @@
 "use server";
 
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
 import { cookies } from "next/headers";
 
 interface SignInProps {
@@ -8,16 +9,10 @@ interface SignInProps {
 }
 
 export default async function signIn({ email, password }: SignInProps) {
-  const response = await fetch(`${process.env.API_URL}/auth/sign-in`, {
+  const response = await fetchWithCredentials({
+    url: "/auth/sign-in",
     method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-    }),
+    body: { email, password },
   });
 
   if (!response.ok) {

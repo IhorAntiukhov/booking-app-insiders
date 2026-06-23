@@ -12,11 +12,11 @@ import FormInput from "@/components/ui/form-input";
 import {
   signInFormSchema,
   SignInFormValues,
-} from "@/features/auth/schemas/signInFormSchema";
+} from "@/features/auth/schemas/sign-in-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import signIn from "../actions/signIn";
+import signIn from "../actions/sign-in";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -41,6 +41,7 @@ export default function SignInForm() {
 
       toast.success("You successfully logged in!");
 
+      router.refresh();
       router.replace("/");
     } catch (error) {
       toast.error((error as Error).message);
@@ -51,7 +52,9 @@ export default function SignInForm() {
     <>
       <CardHeader className="flex flex-col items-center">
         <CardTitle>Welcome back!</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardDescription className="text-center">
+          Sign in to your account
+        </CardDescription>
       </CardHeader>
 
       <CardContent>

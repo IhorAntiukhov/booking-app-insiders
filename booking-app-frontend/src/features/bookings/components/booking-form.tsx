@@ -9,8 +9,8 @@ import BookingDto from "../types/booking-dto";
 import { useState } from "react";
 import DatePicker from "@/components/ui/date-picker";
 import createBooking from "../actions/create-booking";
-import { combineDateAndTime } from "@/lib/utils";
 import updateBooking from "../actions/update-booking";
+import { combineDateAndTime } from "@/lib/dates";
 
 interface BookingFormProps {
   roomId: number;
@@ -55,6 +55,8 @@ export default function BookingForm({
             endDate: endTime.toISOString(),
             roomId,
           });
+
+          toast.success("Booking was successfully updated!");
         } else {
           await createBooking({
             description,
@@ -62,9 +64,10 @@ export default function BookingForm({
             endDate: endTime.toISOString(),
             roomId,
           });
+
+          toast.success("Booking was successfully created!");
         }
 
-        toast.success("Booking was successfully created!");
         router.refresh();
       } catch (error) {
         toast.error((error as Error).message);

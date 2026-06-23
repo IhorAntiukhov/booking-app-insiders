@@ -1,19 +1,15 @@
 "use server";
 
-import UserRoomDto from "../types/user-room-dto";
 import fetchWithCredentials from "@/actions/fetch-with-credentials";
 
-export default async function deleteUserFromRoom({
-  userId,
-  roomId,
-}: UserRoomDto) {
+interface CancelBookingProps {
+  bookingId: number;
+}
+
+export default async function cancelBooking({ bookingId }: CancelBookingProps) {
   const response = await fetchWithCredentials({
-    url: "/rooms/usersInRomm",
+    url: `/bookings/sign-up/${bookingId}`,
     method: "DELETE",
-    body: {
-      userId,
-      roomId,
-    },
     setCookies: true,
   });
 

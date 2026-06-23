@@ -9,11 +9,10 @@ interface FullRoomItem {
     startDate: string;
     endDate: string;
     usersInBooking: {
-      user: {
-        id: string;
-        name: string;
-        email: string;
-      };
+      isOwner: boolean;
+      id: string;
+      name: string;
+      email: string;
     }[];
   }[];
   usersInRoom: {

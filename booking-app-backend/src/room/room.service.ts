@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateRoomDto } from "./dto/create-room.dto";
-import { UpdateRoomDto } from "./dto/update-room.dto";
 import { PrismaService } from "src/prisma/prisma.service";
-import JwtPayload from "src/auth/types/jwtPayload.type";
 import { AddUserToRoomDto } from "./dto/add-user-to-room.dto";
 import { DeleteUserFromRoomDto } from "./dto/delete-user-from-room.dto";
+import User from "src/common/types/user.type";
 
 @Injectable()
 export class RoomService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(user: JwtPayload) {
+  async findAll(user: User) {
     return await this.prismaService.room.findMany({
       where: {
         usersInRoom: {
@@ -22,9 +21,10 @@ export class RoomService {
     });
   }
 
-  async findOne(id: number, user: JwtPayload) {
+  async findOne(id: number, user: User) {
     const roomData = await this.prismaService.room.findFirst({
       where: {
+        id,
         usersInRoom: {
           some: {
             userId: user.id,
@@ -78,13 +78,22 @@ export class RoomService {
           ) !== -1
             ? "admin"
             : "user",
+        bookings: roomData.bookings.map((booking) => ({
+          ...booking,
+          usersInBooking: booking.usersInBooking.map(
+            ({ user: userInRoom }) => ({
+              ...userInRoom,
+              isOwner: user.id === userInRoom.id,
+            }),
+          ),
+        })),
       };
     }
 
     return null;
   }
 
-  async create({ name, description }: CreateRoomDto, user: JwtPayload) {
+  async create({ name, description }: CreateRoomDto, user: User) {
     const newRoom = await this.prismaService.room.create({
       data: {
         name,
@@ -128,7 +137,7 @@ export class RoomService {
     });
   }
 
-  async update(id: number, data: UpdateRoomDto) {
+  async update(id: number, data: CreateRoomDto) {
     await this.prismaService.room.update({
       data,
       where: {

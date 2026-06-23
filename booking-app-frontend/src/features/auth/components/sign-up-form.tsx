@@ -15,8 +15,8 @@ import { useForm } from "react-hook-form";
 import {
   signUpFormSchema,
   SignUpFormValues,
-} from "../schemas/signUpFormSchema";
-import signUp from "../actions/signUp";
+} from "../schemas/sign-up-form-schema";
+import signUp from "../actions/sign-up";
 import { toast } from "sonner";
 
 export default function SignUpForm() {
@@ -48,7 +48,7 @@ export default function SignUpForm() {
     <>
       <CardHeader className="flex flex-col items-center">
         <CardTitle>Welcome to Booking App</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-center">
           Create rooms, invite users, and make bookings
         </CardDescription>
       </CardHeader>

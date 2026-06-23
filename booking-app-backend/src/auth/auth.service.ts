@@ -5,13 +5,13 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { SignUpDto } from "./dto/signUp.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
 import { hash, verify } from "argon2";
-import { SignInDto } from "./dto/signIn.dto";
+import { SignInDto } from "./dto/sign-in.dto";
 import { Response } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import isDevEnv from "src/common/isDevEnv.util";
+import isDevEnv from "src/common/utils/is-dev-env.util";
 
 @Injectable()
 export class AuthService {

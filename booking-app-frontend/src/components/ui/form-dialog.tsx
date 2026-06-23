@@ -7,28 +7,40 @@ import {
   DialogTrigger,
 } from "./dialog";
 import { Button } from "./button";
+import IconButton from "./icon-button";
 
-interface FormDialogProps extends React.PropsWithChildren {
-  triggerLabel: string;
+interface SharedDialogProps extends React.PropsWithChildren {
   title: string;
 }
 
-export default function FormDialog({
-  triggerLabel,
-  title,
-  children,
-}: FormDialogProps) {
+interface TextButtonDialogProps extends SharedDialogProps {
+  type: "text";
+  triggerLabel: string;
+}
+
+interface IconButtonDialogProps extends SharedDialogProps {
+  type: "icon";
+  icon: React.ReactNode;
+}
+
+type FormDialogProps = TextButtonDialogProps | IconButtonDialogProps;
+
+export default function FormDialog(props: FormDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>{triggerLabel}</Button>
+        {props.type === "text" ? (
+          <Button>{props.triggerLabel}</Button>
+        ) : (
+          <IconButton>{props.icon}</IconButton>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{props.title}</DialogTitle>
         </DialogHeader>
 
-        {children}
+        {props.children}
       </DialogContent>
     </Dialog>
   );

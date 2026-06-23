@@ -4,10 +4,9 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { CreateBookingDto } from "./dto/create-booking.dto";
-import { UpdateBookingDto } from "./dto/update-booking.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserBookingDto } from "./dto/user-booking.dto";
-import JwtPayload from "src/auth/types/jwtPayload.type";
+import User from "src/common/types/user.type";
 
 @Injectable()
 export class BookingService {
@@ -21,15 +20,11 @@ export class BookingService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
-  }
-
   async update(
     id: number,
-    { description, startDate, endDate, roomId }: UpdateBookingDto,
+    { description, startDate, endDate, roomId }: CreateBookingDto,
   ) {
-    await this.validateBooking(startDate, endDate, roomId);
+    await this.validateBooking(startDate, endDate, roomId, id);
 
     await this.prismaService.booking.update({
       where: {
@@ -47,9 +42,20 @@ export class BookingService {
     });
   }
 
-  async signUpForMeeting({ bookingId }: UserBookingDto, user: JwtPayload) {
+  async signUpForMeeting({ bookingId }: UserBookingDto, user: User) {
     await this.prismaService.userBooking.create({
       data: { bookingId, userId: user.id },
+    });
+  }
+
+  async cancelBooking(id: number, user: User) {
+    await this.prismaService.userBooking.delete({
+      where: {
+        userId_bookingId: {
+          bookingId: id,
+          userId: user.id,
+        },
+      },
     });
   }
 
@@ -57,26 +63,35 @@ export class BookingService {
     startDate: string,
     endDate: string,
     roomId: number,
+    bookingId?: number,
   ) {
-    const startTime = new Date(startDate).getTime();
-    const endTime = new Date(endDate).getTime();
+    const startTimestamp = new Date(startDate).getTime();
+    const endTimestamp = new Date(endDate).getTime();
 
-    if (startTime >= endTime) {
+    if (new Date().getTime() >= startTimestamp) {
+      throw new BadRequestException("You cannot create bookings for the past");
+    }
+
+    if (startTimestamp >= endTimestamp) {
       throw new BadRequestException("Start date must be smaller than end date");
     }
 
-    const bookingsForRoom = await this.prismaService.booking.findMany({
-      where: { roomId },
+    const bookingsForRoom = await this.prismaService.booking.findFirst({
+      where: {
+        id: {
+          not: bookingId,
+        },
+        roomId,
+        startDate: {
+          lt: endDate,
+        },
+        endDate: {
+          gt: startDate,
+        },
+      },
     });
 
-    const hasOverlap = bookingsForRoom.some((booking) => {
-      const existingStart = new Date(booking.startDate).getTime();
-      const existingEnd = new Date(booking.endDate).getTime();
-
-      return existingStart < endTime && existingEnd > startTime;
-    });
-
-    if (hasOverlap) {
+    if (bookingsForRoom) {
       throw new ConflictException("There is already a booking for this time");
     }
   }

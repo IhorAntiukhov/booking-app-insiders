@@ -10,11 +10,11 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { SignUpDto } from "./dto/signUp.dto";
-import { SignInDto } from "./dto/signIn.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
+import { SignInDto } from "./dto/sign-in.dto";
 import type { Response } from "express";
 import { JwtGuard } from "./guards/auth.guard";
-import JwtPayload from "./types/jwtPayload.type";
+import type RequestWithUser from "src/common/types/request-with-user.type";
 
 @Controller("auth")
 export class AuthController {
@@ -36,7 +36,7 @@ export class AuthController {
 
   @UseGuards(JwtGuard)
   @Get("me")
-  getMe(@Req() request: Request & { user: JwtPayload }) {
+  getMe(@Req() request: RequestWithUser) {
     return request.user;
   }
 }

@@ -1,27 +1,18 @@
 "use server";
 
-import { cookies } from "next/headers";
 import UserItemDto from "../types/user-item-dto";
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
 
 export default async function addUserToRoom({
   email,
   role,
   roomId,
 }: UserItemDto) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
-
-  const response = await fetch(`${process.env.API_URL}/rooms/usersInRoom`, {
+  const response = await fetchWithCredentials({
+    url: "/rooms/usersInRoom",
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `access_token=${accessToken ?? ""}`,
-    },
-    body: JSON.stringify({
-      email,
-      role,
-      roomId,
-    }),
+    body: { email, role, roomId },
+    setCookies: true,
   });
 
   if (!response.ok) {

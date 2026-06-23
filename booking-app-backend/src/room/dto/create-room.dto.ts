@@ -8,6 +8,6 @@ export class CreateRoomDto {
 
   @IsString()
   @IsOptional()
-  @MaxLength(50)
+  @MaxLength(100)
   description: string;
 }

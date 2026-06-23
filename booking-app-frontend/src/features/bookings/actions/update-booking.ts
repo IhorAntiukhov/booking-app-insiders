@@ -1,7 +1,11 @@
 "use server";
 
-import { cookies } from "next/headers";
 import BookingDto from "../types/booking-dto";
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
+
+interface UpdateBookingProps extends BookingDto {
+  id: number;
+}
 
 export default async function updateBooking({
   id,
@@ -9,24 +13,17 @@ export default async function updateBooking({
   startDate,
   endDate,
   roomId,
-}: BookingDto & { id: number }) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
-
-  console.log(roomId);
-
-  const response = await fetch(`${process.env.API_URL}/bookings/${id}`, {
+}: UpdateBookingProps) {
+  const response = await fetchWithCredentials({
+    url: `/bookings/${id}`,
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `access_token=${accessToken ?? ""}`,
-    },
-    body: JSON.stringify({
+    body: {
       description,
       startDate,
       endDate,
       roomId,
-    }),
+    },
+    setCookies: true,
   });
 
   if (!response.ok) {

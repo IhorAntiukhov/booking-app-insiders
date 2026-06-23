@@ -1,7 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
 import BookingDto from "../types/booking-dto";
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
 
 export default async function createBooking({
   description,
@@ -9,23 +9,16 @@ export default async function createBooking({
   endDate,
   roomId,
 }: BookingDto) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
-
-  console.log(roomId);
-
-  const response = await fetch(`${process.env.API_URL}/bookings`, {
+  const response = await fetchWithCredentials({
+    url: "/bookings",
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `access_token=${accessToken ?? ""}`,
-    },
-    body: JSON.stringify({
+    body: {
       description,
       startDate,
       endDate,
       roomId,
-    }),
+    },
+    setCookies: true,
   });
 
   if (!response.ok) {

@@ -1,26 +1,16 @@
 "use server";
 
-import { cookies } from "next/headers";
+import fetchWithCredentials from "@/actions/fetch-with-credentials";
 
-export default async function deleteBooking({
-  id,
-  roomId,
-}: {
+interface DeleteBookingProps {
   id: number;
-  roomId: number;
-}) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
+}
 
-  const response = await fetch(`${process.env.API_URL}/bookings/${id}`, {
+export default async function deleteBooking({ id }: DeleteBookingProps) {
+  const response = await fetchWithCredentials({
+    url: `/bookings/${id}`,
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `access_token=${accessToken ?? ""}`,
-    },
-    body: JSON.stringify({
-      roomId,
-    }),
+    setCookies: true,
   });
 
   if (!response.ok) {

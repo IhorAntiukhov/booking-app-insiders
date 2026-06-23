@@ -8,18 +8,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import IconButton from "@/components/ui/icon-button";
-import { formatDate, formatTime } from "@/lib/utils";
-import { Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import deleteBooking from "../actions/delete-booking";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import signUpForMeeting from "../actions/sign-up-for-meeting";
 import { Separator } from "@/components/ui/separator";
-import FullRoomItem from "@/features/rooms/types/fullRoomItem";
+import FullRoomItem from "@/features/rooms/types/full-room-item";
 import UserItem from "@/features/rooms/components/user-item";
 import FormDialog from "@/components/ui/form-dialog";
 import BookingForm from "./booking-form";
+import { formatDate, formatTime } from "@/lib/dates";
+import cancelBooking from "../actions/cancel-booking";
 
 interface BookingItemProps {
   id: number;
@@ -54,9 +55,21 @@ export default function BookingItem({
     }
   };
 
+  const handleCancelBooking = async () => {
+    try {
+      await cancelBooking({ bookingId: id });
+
+      toast.success("You canceled the booking successfully!");
+
+      router.refresh();
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
+
   const handleDeleteBooking = async () => {
     try {
-      await deleteBooking({ id, roomId });
+      await deleteBooking({ id });
 
       toast.success("Booking was successfully deleted!");
 
@@ -68,10 +81,10 @@ export default function BookingItem({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex flex-col space-y-3">
+      <CardHeader className="flex flex-col">
         {isAdmin && (
-          <div className="flex space-x-3">
-            <FormDialog triggerLabel="Update" title="Update booking">
+          <div className="flex items-center space-x-1.5">
+            <FormDialog type="icon" title="Update booking" icon={<Pencil />}>
               <BookingForm roomId={roomId} bookingId={id} doUpdate />
             </FormDialog>
 
@@ -84,30 +97,42 @@ export default function BookingItem({
         <CardTitle>{description}</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex-1">
-        <Button className="w-full" onClick={handleSignUpForMeeting}>
-          Sign up
-        </Button>
+      <CardContent className="flex-1 space-y-3">
+        {users.length > 0 && (
+          <>
+            <div className="-mx-4">
+              <Separator />
+            </div>
 
-        <Separator />
+            <p>Participants:</p>
 
-        <p>Participants:</p>
+            <div className="flex flex-col space-y-3">
+              {users.map(({ id, email, name }) => (
+                <UserItem
+                  key={id}
+                  name={name}
+                  id={id}
+                  email={email}
+                  roomId={0}
+                  isAdmin={false}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
-        <div className="flex flex-col space-y-3">
-          {users.map(({ user: { id, email, name } }) => (
-            <UserItem
-              key={id}
-              name={name}
-              id={id}
-              email={email}
-              roomId={0}
-              isAdmin={false}
-            />
-          ))}
-        </div>
+        {users.findIndex(({ isOwner }) => isOwner) === -1 ? (
+          <Button className="w-full" onClick={handleSignUpForMeeting}>
+            Sign up
+          </Button>
+        ) : (
+          <Button className="w-full" onClick={handleCancelBooking}>
+            Cancel
+          </Button>
+        )}
       </CardContent>
 
-      <CardFooter className="shrink-0 flex flex-col space-y-3">
+      <CardFooter className="shrink-0 flex flex-col space-y-1.5">
         <p>{formatDate(startDate)}</p>
         <p>
           {formatTime(startDate)} - {formatTime(endDate)}
