@@ -10,11 +10,6 @@ export class Admin implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request: Request = context.switchToHttp().getRequest();
 
-    console.log(
-      context.getHandler().name.toString(),
-      context.getClass().name.toString(),
-    );
-
     let roomId: number | null =
       +(request.body as { roomId: string })?.roomId || +request.params.id;
     const user = request.user as User;
@@ -23,8 +18,6 @@ export class Admin implements CanActivate {
       context.getClass().name === "BookingController" &&
       context.getHandler().name === "remove"
     ) {
-      console.log(+request.params.id, user.id);
-
       const userBooking = await this.prismaService.booking.findUnique({
         where: {
           id: +request.params.id,
@@ -40,8 +33,6 @@ export class Admin implements CanActivate {
           roomId: true,
         },
       });
-
-      console.log(userBooking);
 
       roomId = userBooking?.roomId || null;
     }
